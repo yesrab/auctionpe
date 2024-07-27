@@ -18,7 +18,7 @@ export async function POST(req) {
 
   try {
     // Create user
-    const user = await prisma.user.create({
+    let user = await prisma.user.create({
       data: {
         username,
         password,
@@ -42,9 +42,13 @@ export async function POST(req) {
       },
     });
 
+    user = await prisma.user.update({
+      where: { id: user.id },
+      data: { currentSession: sessionHistory.id },
+    });
     // Generate JWT token
     const token = jwt.sign(
-      { userId: user.id, username: user.username, expirationTime },
+      { userId: user.id, username: user.username, sessionId: user.currentSession, expirationTime },
       SECRET_KEY,
       {
         expiresIn: sessionTime,
