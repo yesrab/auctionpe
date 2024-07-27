@@ -13,8 +13,8 @@ export default async function Home() {
   // console.log(user);
   let data = null;
   try {
-    data = await jose.jwtVerify(user.value, new TextEncoder().encode(SECRET_KEY));
-    console.log(data.payload);
+    data = await jose.jwtVerify(user?.value, new TextEncoder().encode(SECRET_KEY));
+    // console.log(data.payload);
   } catch (e) {
     console.error("error", e);
   }
