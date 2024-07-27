@@ -9,11 +9,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-
-const history = [
+import { cookies } from "next/headers";
+import * as jose from "jose";
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
+const SECRET_KEY = process.env.SECRET_KEY || "secret";
+let history = [
   {
     userID: "1",
-    username: "yesrab",
+    username: "dummy",
     counter: "250",
     toggle: true,
     id: 1,
@@ -21,7 +25,7 @@ const history = [
   },
   {
     userID: "2",
-    username: "yesrabAli",
+    username: "dummy",
     counter: "250",
     toggle: false,
     id: 3,
@@ -29,8 +33,36 @@ const history = [
   },
 ];
 
-export default function page(req) {
-  console.log(typeof req);
+export default async function page(req) {
+  const cookieStore = cookies();
+  const token = cookieStore.get("auth_token");
+  let data = null;
+  let userSessions = [];
+  try {
+    data = await jose.jwtVerify(token?.value, new TextEncoder().encode(SECRET_KEY));
+    console.log(data);
+    const userId = data.payload.userId;
+    userSessions = await prisma.sessionHistory.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    history = userSessions.map((session) => ({
+      userID: session.userId,
+      username: session.user.username,
+      counter: session.counter,
+      toggle: session.toggle,
+      id: session.id,
+      expirationTime: session.expirationTime.toISOString(),
+    }));
+  } catch (e) {
+    console.log("token not found");
+  }
+
   return (
     <main className='md:p-24'>
       <Table>
