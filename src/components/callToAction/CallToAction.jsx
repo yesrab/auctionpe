@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 
+import { useToast } from "@/components/ui/use-toast";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 import { useContext, useEffect, useState } from "react";
@@ -20,11 +21,12 @@ export function CallToAction() {
   const [isOpen, setIsOpen] = useState(false);
   const [count, setCount] = useState(0);
   const [toggle, setToggle] = useState(false);
+  const { toast } = useToast();
   const getCurrentSessionData = async () => {
     try {
       const response = await fetch("/api/syncdata");
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
       setCount(data?.sessionData?.counter);
       setToggle(data?.sessionData?.toggle);
     } catch (e) {}
@@ -41,7 +43,25 @@ export function CallToAction() {
 
   const saveData = async () => {
     const data = { counter: count, toggle };
-    console.log(data);
+    const response = await fetch("/api/syncdata", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    if (response.ok) {
+      toast({ description: "data saved" });
+      setIsOpen(false);
+    } else {
+      const data = await response.json();
+      dispatch({ type: "INACTIVE" });
+      toast({
+        title: "Uh oh! Something went wrong.",
+        description: data.message,
+      });
+    }
+    // const updatedData = await response.json();
   };
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>

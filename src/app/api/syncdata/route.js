@@ -35,3 +35,30 @@ export async function GET(req) {
     sessionData: data,
   });
 }
+
+export async function PATCH(req) {
+  const data = await req.json();
+  const { counter, toggle } = data;
+  const token = req.cookies.get("auth_token");
+  let decoded = null;
+  try {
+    decoded = await jose.jwtVerify(token.value, new TextEncoder().encode(SECRET_KEY));
+  } catch (error) {
+    return NextResponse.redirect(new URL("/account/login", req.url));
+  }
+  try {
+    const sessionData = await prisma.sessionHistory.update({
+      where: { id: decoded.payload.sessionId },
+      data: {
+        counter,
+        toggle,
+      },
+    });
+    return NextResponse.json({
+      decoded,
+      sessionData,
+    });
+  } catch (e) {
+    return NextResponse.json({ message: "Server error", error }, { status: 404 });
+  }
+}

@@ -38,6 +38,25 @@ export default async function page(req) {
   const token = cookieStore.get("auth_token");
   let data = null;
   let userSessions = [];
+
+  function formatDateTime(dateString) {
+    const date = new Date(dateString);
+
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-indexed
+    const year = date.getFullYear();
+
+    let hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+    const ampm = hours >= 12 ? "PM" : "AM";
+
+    hours = hours % 12 || 12; // Convert to 12-hour format and handle midnight (0 -> 12)
+    const formattedHours = String(hours).padStart(2, "0");
+
+    return `${day}/${month}/${year} - ${formattedHours}:${minutes}:${seconds} ${ampm}`;
+  }
+
   try {
     data = await jose.jwtVerify(token?.value, new TextEncoder().encode(SECRET_KEY));
     // console.log(data);
@@ -57,8 +76,11 @@ export default async function page(req) {
       counter: session.counter,
       toggle: session.toggle,
       id: session.id,
-      expirationTime: session.expirationTime.toISOString(),
+      expirationTime: formatDateTime(session.expirationTime.toISOString()),
     }));
+    history.sort((a, b) => {
+      return b.id - a.id;
+    });
   } catch (e) {
     console.log("token not found");
   }
@@ -74,7 +96,7 @@ export default async function page(req) {
             <TableHead>Counter</TableHead>
             <TableHead>Toggel</TableHead>
             <TableHead className='font-medium'>Session ID</TableHead>
-            <TableHead className='font-medium'>Session expired</TableHead>
+            <TableHead className='font-medium text-end'>Session expired</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -91,7 +113,7 @@ export default async function page(req) {
                 )}
               </TableCell>
               <TableCell>{session.id}</TableCell>
-              <TableCell>{session.expirationTime}</TableCell>
+              <TableCell className='text-end'>{session.expirationTime}</TableCell>
             </TableRow>
           ))}
         </TableBody>
