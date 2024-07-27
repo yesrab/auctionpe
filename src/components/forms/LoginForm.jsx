@@ -53,7 +53,10 @@ const LoginForm = () => {
       if (response.ok) {
         // console.log("account logged in successfully");
         // router.replace("/", { scroll: true });
-
+        toast({
+          title: "Logging in....",
+          description: "one sec please",
+        });
         window.location.href = "/";
       } else {
         // console.error("Failed to login account");
