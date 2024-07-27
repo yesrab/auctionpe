@@ -9,7 +9,6 @@ export async function GET(req) {
   if (!token) {
     return NextResponse.redirect(new URL("/account/login", req.url));
   }
-
   let decoded;
   try {
     decoded = await jose.jwtVerify(token.value, new TextEncoder().encode(SECRET_KEY));
@@ -24,7 +23,6 @@ export async function GET(req) {
   if (!sessionData) {
     return NextResponse.json({ message: "Session not found" }, { status: 404 });
   }
-
   return NextResponse.json({
     message: "Current session data",
     sessionData,

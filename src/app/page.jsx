@@ -30,6 +30,10 @@ export default async function Home() {
         {!!user ? (
           <>
             <h2 className='text-3xl px-2 text-justify'>Your session status</h2>
+            <span>
+              Session ID :
+              <p className='font-medium'>{data?.payload?.sessionId || "check dasboard"}</p>
+            </span>
             <CountdownTimer expirationTime={data?.payload?.expirationTime || 0} />
           </>
         ) : null}

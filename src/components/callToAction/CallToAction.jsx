@@ -26,10 +26,13 @@ export function CallToAction() {
     try {
       const response = await fetch("/api/syncdata");
       const data = await response.json();
-      // console.log(data);
+      console.log(data);
       setCount(data?.sessionData?.counter);
       setToggle(data?.sessionData?.toggle);
-    } catch (e) {}
+    } catch (e) {
+      console.log(e);
+      dispatch({ type: "INACTIVE" });
+    }
   };
   useEffect(() => {
     if (!isActive) {
