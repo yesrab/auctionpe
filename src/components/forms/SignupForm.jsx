@@ -49,7 +49,7 @@ const SignupForm = () => {
   });
 
   async function onSubmit(values) {
-    console.log(values);
+    // console.log(values);
     try {
       const response = await fetch("/api/account/signup", {
         method: "POST",
@@ -59,11 +59,11 @@ const SignupForm = () => {
         body: JSON.stringify(values),
       });
       if (response.ok) {
-        console.log("account created successfully");
+        // console.log("account created successfully");
         dispatch({ type: "ACTIVE" });
         router.push("/");
       } else {
-        console.error("Failed to create account");
+        // console.error("Failed to create account");
         const data = await response.json();
         toast({
           title: "Uh oh! Something went wrong.",
@@ -71,7 +71,7 @@ const SignupForm = () => {
         });
       }
     } catch (e) {
-      console.error(e);
+      // console.error(e);
       toast({
         title: "Uh oh! Something went wrong.",
         description: "There was a problem with the server",

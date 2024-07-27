@@ -11,9 +11,9 @@ const Nav = async () => {
   let data = null;
   try {
     data = await jose.jwtVerify(user.value, new TextEncoder().encode(SECRET_KEY));
-    console.log(data.payload);
+    // console.log(data.payload);
   } catch (e) {
-    console.error("error", e);
+    // console.error("error", e);
   }
 
   return (

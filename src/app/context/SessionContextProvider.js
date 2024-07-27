@@ -6,11 +6,11 @@ export default function SessionContextProvider({ children }) {
   function reducer(state, action) {
     switch (action.type) {
       case "ACTIVE":
-        localStorage.setItem("isSessionActive", JSON.stringify(true));
+        window.localStorage.setItem("isSessionActive", JSON.stringify(true));
         return true;
 
       case "INACTIVE":
-        localStorage.setItem("isSessionActive", JSON.stringify(false));
+        window.localStorage.setItem("isSessionActive", JSON.stringify(false));
         return false;
 
       default:
@@ -18,7 +18,7 @@ export default function SessionContextProvider({ children }) {
     }
   }
 
-  const sessionDetails = localStorage.getItem("isSessionActive") || false;
+  const sessionDetails = JSON.parse(window.localStorage.getItem("isSessionActive")) || false;
   const [isActive, dispatch] = useReducer(reducer, sessionDetails);
 
   return <Session.Provider value={{ isActive, dispatch }}>{children}</Session.Provider>;

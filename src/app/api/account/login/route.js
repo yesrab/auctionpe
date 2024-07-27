@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { serialize } from "cookie";
 import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
 
 const SECRET_KEY = process.env.SECRET_KEY || "secret";
 const prisma = new PrismaClient();
@@ -62,7 +63,11 @@ export async function POST(req) {
 
     return response;
   } catch (error) {
-    console.error(error.message);
+    // console.error(error.message);
     return NextResponse.json({ error: "Login failed", message: error.message }, { status: 500 });
   }
+}
+export async function PATCH(req) {
+  cookies().delete("auth_token");
+  return NextResponse.redirect(new URL("/", req.url));
 }

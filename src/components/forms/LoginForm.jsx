@@ -40,7 +40,7 @@ const LoginForm = () => {
   });
 
   async function onSubmit(values) {
-    console.log(values);
+    // console.log(values);
     dispatch({ type: "ACTIVE" });
     try {
       const response = await fetch("/api/account/login", {
@@ -51,12 +51,12 @@ const LoginForm = () => {
         body: JSON.stringify(values),
       });
       if (response.ok) {
-        console.log("account logged in successfully");
+        // console.log("account logged in successfully");
         // router.replace("/", { scroll: true });
 
         window.location.href = "/";
       } else {
-        console.error("Failed to login account");
+        // console.error("Failed to login account");
         const data = await response.json();
         dispatch({ type: "INACTIVE" });
         toast({
@@ -65,7 +65,7 @@ const LoginForm = () => {
         });
       }
     } catch (e) {
-      console.error(e);
+      // console.error(e);
       toast({
         title: "Uh oh! Something went wrong.",
         description: "There was a problem with the server",

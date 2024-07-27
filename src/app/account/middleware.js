@@ -4,21 +4,21 @@ const SECRET_KEY = process.env.SECRET_KEY || "secret";
 
 export async function middleware(req) {
   const token = req.cookies.get("auth_token");
-
-  if (!token?.value) {
+  console.log("account middleware");
+  if (token?.value) {
     console.log("redirecting to Login");
-    return NextResponse.redirect(new URL("/account/login", req.url));
+    return NextResponse.redirect(new URL("/", req.url));
   }
   try {
     const decoded = await jose.jwtVerify(token.value, new TextEncoder().encode(SECRET_KEY));
-    return NextResponse.next();
+    return NextResponse.redirect(new URL("/", req.url));
   } catch (error) {
     // console.log("errored out");
     // console.log(error);
-    return NextResponse.redirect(new URL("/account/login", req.url));
+    return NextResponse.next();
   }
 }
 
 export const config = {
-  matcher: ["/DashBoard"],
+  matcher: ["/account/login"],
 };
