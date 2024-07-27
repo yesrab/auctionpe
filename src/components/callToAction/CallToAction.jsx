@@ -57,6 +57,7 @@ export function CallToAction() {
       const data = await response.json();
       dispatch({ type: "INACTIVE" });
       toast({
+        variant: "destructive",
         title: "Uh oh! Something went wrong.",
         description: data.message,
       });
