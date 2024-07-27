@@ -1,0 +1,14 @@
+{
+  "trailingComma": "all",
+  "semi": true,
+  "tabWidth": 2,
+  "useTabs": false,
+  "printWidth": 100,
+  "singleQuote": false,
+  "jsxSingleQuote": true,
+  "bracketSameLine": false,
+  "jsxBracketSameLine": false,
+  "bracketSpacing": true,
+  "arrowParens": "always",
+  "importOrder": ["^react(.*)", "^@seamless/(.*)$", "<THIRD_PARTY_MODULES>", "^[./]"]
+}
