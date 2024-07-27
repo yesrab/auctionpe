@@ -40,7 +40,7 @@ export default async function page(req) {
   let userSessions = [];
   try {
     data = await jose.jwtVerify(token?.value, new TextEncoder().encode(SECRET_KEY));
-    console.log(data);
+    // console.log(data);
     const userId = data.payload.userId;
     userSessions = await prisma.sessionHistory.findMany({
       where: {

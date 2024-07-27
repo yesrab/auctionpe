@@ -9,7 +9,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -21,11 +20,29 @@ export function CallToAction() {
   const [isOpen, setIsOpen] = useState(false);
   const [count, setCount] = useState(0);
   const [toggle, setToggle] = useState(false);
+  const getCurrentSessionData = async () => {
+    try {
+      const response = await fetch("/api/syncdata");
+      const data = await response.json();
+      console.log(data);
+      setCount(data?.sessionData?.counter);
+      setToggle(data?.sessionData?.toggle);
+    } catch (e) {}
+  };
   useEffect(() => {
     if (!isActive) {
       setIsOpen(false);
     }
   }, [isActive]);
+
+  useEffect(() => {
+    getCurrentSessionData();
+  }, []);
+
+  const saveData = async () => {
+    const data = { counter: count, toggle };
+    console.log(data);
+  };
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -73,7 +90,9 @@ export function CallToAction() {
           </div>
         </div>
         <DialogFooter>
-          <Button type='submit'>Save changes</Button>
+          <Button onClick={saveData} type='submit'>
+            Save changes
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
